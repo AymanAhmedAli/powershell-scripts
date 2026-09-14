@@ -71,19 +71,19 @@ Write-Host "=================================" -ForegroundColor Cyan
 # How it works:
 # ================================
 # 1. Shows current vs target password policy
-# 2. WhatIf=$true → shows what would change
-# 3. WhatIf=$false → applies new policy and verifies
+# 2. WhatIf=$true > shows what would change
+# 3. WhatIf=$false > applies new policy and verifies
 #
 # Why this matters:
 #   Short passwords are brute-forced quickly:
-#   → 7 chars = crackable in minutes with modern GPUs
-#   → 12 chars = significantly harder
+#   > 7 chars = crackable in minutes with modern GPUs
+#   > 12 chars = significantly harder
 #   Account lockout prevents brute force attacks.
 #
 # WARNING: Announce to users before applying.
 #   Users with short passwords must change at next login.
 #
-# Impact: ⚠️ Medium — announce to users first
+# Impact: ⚠️ Medium - announce to users first
 #
 # Verification:
 #   Get-ADDefaultDomainPasswordPolicy

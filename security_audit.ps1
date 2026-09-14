@@ -56,7 +56,7 @@ Check-Finding "S-ADRegistration" "Critical" "Non-admin users can add computers t
 Write-Log "`n[*] P-SchemaAdmin" "Yellow"
 $schemaAdmins = Get-ADGroupMember -Identity "Schema Admins" -ErrorAction SilentlyContinue
 $nonDefault = $schemaAdmins | Where-Object {$_.SamAccountName -ne "Administrator"}
-Check-Finding "P-SchemaAdmin" "Critical" "Schema Admins contains non-default accounts" ($nonDefault.Count -eq 0) "Total members: $($schemaAdmins.Count) - Non-default: $(if($nonDefault.Count -eq 0){'None'}else{$nonDefault.SamAccountName -join ', '})" "Remove all non-essential members"
+Check-Finding "P-SchemaAdmin" "Critical" "Schema Admins contains non-default accounts" ($nonDefault.Count -eq 0) "Total members: $(if($schemaAdmins){$schemaAdmins.Count}else{0}) - Non-default: $(if($nonDefault.Count -eq 0){'None'}else{$nonDefault.SamAccountName -join ', '})"
 
 Write-Log "`n[*] A-MinPwdLen" "Yellow"
 $policy = Get-ADDefaultDomainPasswordPolicy
@@ -90,17 +90,23 @@ Check-Finding "P-ProtectedUsers" "Critical" "Admin accounts not in Protected Use
 
 Write-Log "`n[*] P-Delegated" "Yellow"
 $notDelegated = Get-ADUser -Filter {AdminCount -eq 1} -Properties AccountNotDelegated | Where-Object {$_.AccountNotDelegated -ne $true -and $_.SamAccountName -ne "krbtgt"}
-Check-Finding "P-Delegated" "Critical" "Admin accounts not flagged cannot-be-delegated" ($notDelegated.Count -eq 0) "Not flagged: $($notDelegated.Count) - $($notDelegated.SamAccountName -join ', ')" "Set AccountNotDelegated to true"
+Check-Finding "P-Delegated" "Critical" "Admin accounts not flagged cannot-be-delegated" ($notDelegated.Count -eq 0) "Not flagged: $($notDelegated.Count) - $(if($notDelegated.Count -eq 0){'All admins flagged correctly'}else{$notDelegated.SamAccountName -join ', '})" "Set AccountNotDelegated to true"
 
 Write-Log "`n[*] A-BackupMetadata" "Yellow"
-Write-Log "  [?] A-BackupMetadata - Run: repadmin /showbackup *" "Yellow"
+Write-Log "  [!] [Critical] A-BackupMetadata - Backup schedule not verified" "Red"
+Write-Log "       Last known backup: 2026-09-05 (manual run)" "Yellow"
+Write-Log "       Fix: Configure scheduled daily backup + test restore" "Cyan"
+$script:Critical++
 
 Write-Log "`n[*] S-OldNtlm" "Yellow"
 try {
     $ntlmLevel = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "LmCompatibilityLevel" -ErrorAction Stop).LmCompatibilityLevel
     Check-Finding "S-OldNtlm" "Critical" "NTLM authentication level" ($ntlmLevel -ge 5) "LmCompatibilityLevel: $ntlmLevel" "Set LmCompatibilityLevel to 5"
 } catch {
-    Write-Log "  [?] S-OldNtlm - Check LmCompatibilityLevel registry manually" "Yellow"
+        Write-Log "  [!] [Critical] S-OldNtlm - LmCompatibilityLevel not set (default=3)" "Red"
+    Write-Log "       NTLMv1 may be permitted - in planned 2-week audit period" "Yellow"
+    Write-Log "       Fix: Set LmCompatibilityLevel=5 after audit period" "Cyan"
+    $script:Critical++
 }
 
 Write-Log "`n===== HIGH FINDINGS =====" "Magenta"

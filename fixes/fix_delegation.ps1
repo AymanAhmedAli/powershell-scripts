@@ -28,7 +28,7 @@ $alreadySet = 0
 
 foreach ($account in $adminAccounts) {
     if ($account.AccountNotDelegated -eq $true) {
-        Write-Host "  [OK] $($account.SamAccountName) — already flagged" -ForegroundColor Green
+        Write-Host "  [OK] $($account.SamAccountName) - already flagged" -ForegroundColor Green
         $alreadySet++
     } else {
         if ($WhatIf) {
@@ -72,16 +72,16 @@ Write-Host "=================================" -ForegroundColor Cyan
 # ================================
 # 1. Gets all accounts with AdminCount=1
 # 2. Checks if AccountNotDelegated flag is set
-# 3. WhatIf=$true → shows what would be changed
-# 4. WhatIf=$false → sets flag and verifies
+# 3. WhatIf=$true > shows what would be changed
+# 4. WhatIf=$false > sets flag and verifies
 #
 # Why this matters:
 #   If admin account is delegatable:
-#   → Attacker compromises a service with delegation rights
-#   → Service can impersonate the admin account
-#   → Full domain compromise possible
+#   > Attacker compromises a service with delegation rights
+#   > Service can impersonate the admin account
+#   > Full domain compromise possible
 #
-# Impact: ✅ Zero — safe to apply immediately
+# Impact: ✅ Zero - safe to apply immediately
 #
 # Verification:
 #   Get-ADUser -Filter {AdminCount -eq 1} -Properties AccountNotDelegated |

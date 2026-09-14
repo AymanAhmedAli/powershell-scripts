@@ -30,7 +30,7 @@ if ($existingSubnets.Count -eq 0) {
     Write-Host "    No subnets defined" -ForegroundColor Red
 } else {
     foreach ($s in $existingSubnets) {
-        Write-Host "    → $($s.Name) | Site: $($s.Site)" -ForegroundColor Gray
+        Write-Host "    > $($s.Name) | Site: $($s.Site)" -ForegroundColor Gray
     }
 }
 
@@ -38,7 +38,7 @@ if ($existingSubnets.Count -eq 0) {
 Write-Host "`n[STEP 2] Domain Controller IPs:" -ForegroundColor Yellow
 $dcs = Get-ADDomainController -Filter *
 foreach ($dc in $dcs) {
-    Write-Host "    → $($dc.Name): $($dc.IPv4Address)" -ForegroundColor Yellow
+    Write-Host "    > $($dc.Name): $($dc.IPv4Address)" -ForegroundColor Yellow
 }
 
 # Add missing subnets
@@ -51,11 +51,11 @@ foreach ($subnet in $Subnets) {
     $existing = $existingSubnets | Where-Object { $_.Name -eq $subnet.Subnet }
 
     if ($existing) {
-        Write-Host "  [OK] $($subnet.Subnet) — already exists" -ForegroundColor Green
+        Write-Host "  [OK] $($subnet.Subnet) - already exists" -ForegroundColor Green
         $exists++
     } else {
         if ($WhatIf) {
-            Write-Host "  [WHATIF] Would add: $($subnet.Subnet) → Site: $($subnet.Site)" -ForegroundColor Yellow
+            Write-Host "  [WHATIF] Would add: $($subnet.Subnet) > Site: $($subnet.Site)" -ForegroundColor Yellow
         } else {
             New-ADReplicationSubnet `
                 -Name $subnet.Subnet `
@@ -71,7 +71,7 @@ if (!$WhatIf) {
     Write-Host "`n[STEP 4] Verification:" -ForegroundColor Yellow
     $newSubnets = Get-ADReplicationSubnet -Filter * -Properties Name, Site
     foreach ($s in $newSubnets) {
-        Write-Host "    → $($s.Name)" -ForegroundColor Green
+        Write-Host "    > $($s.Name)" -ForegroundColor Green
     }
 }
 
@@ -92,8 +92,8 @@ Write-Host "=================================" -ForegroundColor Cyan
 # 1. Lists existing subnets in AD Sites and Services
 # 2. Lists all DC IPs for reference
 # 3. Compares defined subnets with existing
-# 4. WhatIf=$true → shows what would be added
-# 5. WhatIf=$false → adds missing subnets and verifies
+# 4. WhatIf=$true > shows what would be added
+# 5. WhatIf=$false > adds missing subnets and verifies
 #
 # Why this matters:
 #   Without subnets: clients may authenticate against far DCs (slow)
@@ -104,7 +104,7 @@ Write-Host "=================================" -ForegroundColor Cyan
 #   Edit $Subnets array to match your environment
 #   Add all network ranges where DCs reside
 #
-# Impact: ✅ Zero — safe to apply immediately
+# Impact: ✅ Zero - safe to apply immediately
 #
 # Verification:
 #   Get-ADReplicationSubnet -Filter * | Select Name, Site

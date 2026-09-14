@@ -7,9 +7,9 @@
 # Requirements: PowerShell 5.1+, Domain Admin, Run on DC
 #
 # IMPORTANT - 3 Phase approach:
-#   Phase 1: Audit  — enable logging only (zero impact)
-#   Phase 2: Negotiate — request but don't require (low impact)
-#   Phase 3: Require — full enforcement (potential impact)
+#   Phase 1: Audit  - enable logging only (zero impact)
+#   Phase 2: Negotiate - request but don't require (low impact)
+#   Phase 3: Require - full enforcement (potential impact)
 #
 #   Start Phase 1, wait 2 weeks, check Event ID 2889,
 #   then move to Phase 3 if no unsigned binds detected.
@@ -29,7 +29,7 @@ $LDAPValues = @{ 1 = 0; 2 = 1; 3 = 2 }
 Write-Host "=================================" -ForegroundColor Cyan
 Write-Host "  Fix: LDAP Signing Enforcement" -ForegroundColor Cyan
 Write-Host "  Domain: $env:USERDNSDOMAIN" -ForegroundColor Cyan
-Write-Host "  Phase: $Phase — $($PhaseNames[$Phase])" -ForegroundColor Cyan
+Write-Host "  Phase: $Phase - $($PhaseNames[$Phase])" -ForegroundColor Cyan
 Write-Host "  WhatIf Mode: $WhatIf" -ForegroundColor Cyan
 Write-Host "=================================" -ForegroundColor Cyan
 
@@ -44,7 +44,7 @@ try {
         0 { "None" }; 1 { "Negotiate" }; 2 { "Required" }
         default { "Unknown ($currentValue)" }
     }
-    Write-Host "    Current: $currentValue — $currentName" -ForegroundColor $(
+    Write-Host "    Current: $currentValue - $currentName" -ForegroundColor $(
         if ($currentValue -eq 2) {"Green"}
         elseif ($currentValue -eq 1) {"Yellow"}
         else {"Red"}
@@ -73,7 +73,7 @@ if ($currentValue -eq $targetValue) {
     Write-Host "    [OK] Already at Phase $Phase" -ForegroundColor Green
 } else {
     if ($WhatIf) {
-        Write-Host "    [WHATIF] Would set LDAPServerIntegrity: $currentValue → $targetValue" -ForegroundColor Yellow
+        Write-Host "    [WHATIF] Would set LDAPServerIntegrity: $currentValue > $targetValue" -ForegroundColor Yellow
     } else {
         Set-ItemProperty -Path $regPath -Name "LDAPServerIntegrity" -Value $targetValue -Type DWord
         Write-Host "    [OK] LDAPServerIntegrity set to $targetValue ✅" -ForegroundColor Green
@@ -90,31 +90,31 @@ if ($Phase -eq 3) {
         Write-Host "    [OK] Channel Binding set to Always ✅" -ForegroundColor Green
     }
 } else {
-    Write-Host "`n[STEP 4] Channel Binding — skipped (Phase 3 only)" -ForegroundColor Gray
+    Write-Host "`n[STEP 4] Channel Binding - skipped (Phase 3 only)" -ForegroundColor Gray
 }
 
 # Step 5: Next steps
 Write-Host "`n[STEP 5] Next Steps..." -ForegroundColor Yellow
 switch ($Phase) {
     1 {
-        Write-Host "    → Wait 2 weeks" -ForegroundColor Cyan
-        Write-Host "    → Check Event ID 2889 in Directory Service log" -ForegroundColor Cyan
-        Write-Host "    → If no Event 2889 → move to Phase 3" -ForegroundColor Cyan
-        Write-Host "    → If Event 2889 exists → fix those apps first" -ForegroundColor Red
+        Write-Host "    > Wait 2 weeks" -ForegroundColor Cyan
+        Write-Host "    > Check Event ID 2889 in Directory Service log" -ForegroundColor Cyan
+        Write-Host "    > If no Event 2889 > move to Phase 3" -ForegroundColor Cyan
+        Write-Host "    > If Event 2889 exists > fix those apps first" -ForegroundColor Red
     }
     2 {
-        Write-Host "    → Monitor for LDAP client issues" -ForegroundColor Cyan
-        Write-Host "    → Check Event ID 2889" -ForegroundColor Cyan
-        Write-Host "    → When stable → move to Phase 3" -ForegroundColor Cyan
+        Write-Host "    > Monitor for LDAP client issues" -ForegroundColor Cyan
+        Write-Host "    > Check Event ID 2889" -ForegroundColor Cyan
+        Write-Host "    > When stable > move to Phase 3" -ForegroundColor Cyan
     }
     3 {
-        Write-Host "    → LDAP signing fully enforced ✅" -ForegroundColor Green
-        Write-Host "    → Monitor Event ID 2888 for rejected unsigned binds" -ForegroundColor Cyan
+        Write-Host "    > LDAP signing fully enforced ✅" -ForegroundColor Green
+        Write-Host "    > Monitor Event ID 2888 for rejected unsigned binds" -ForegroundColor Cyan
     }
 }
 
 Write-Host "`n=================================" -ForegroundColor Cyan
-Write-Host "  Done — Phase $Phase Complete" -ForegroundColor Cyan
+Write-Host "  Done - Phase $Phase Complete" -ForegroundColor Cyan
 Write-Host "=================================" -ForegroundColor Cyan
 
 # ================================
@@ -131,7 +131,7 @@ Write-Host "=================================" -ForegroundColor Cyan
 #   2889 = unsigned LDAP bind detected (WARNING)
 #   2888 = unsigned bind rejected (INFO)
 #
-# Impact: ⚠️ High — use 3-phase approach
+# Impact: ⚠️ High - use 3-phase approach
 #   Legacy apps using unsigned LDAP will break in Phase 3.
 #   Always run Phase 1 audit first for 2 weeks.
 #

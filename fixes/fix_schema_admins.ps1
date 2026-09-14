@@ -62,8 +62,8 @@ Write-Host "=================================" -ForegroundColor Cyan
 # ================================
 # 1. Lists all current Schema Admins members
 # 2. Identifies members not in KeepAccounts safelist
-# 3. WhatIf=$true → shows what would be removed
-# 4. WhatIf=$false → removes members and verifies
+# 3. WhatIf=$true > shows what would be removed
+# 4. WhatIf=$false > removes members and verifies
 #
 # Why this matters:
 #   Schema Admins can modify the entire AD forest schema.
@@ -71,7 +71,7 @@ Write-Host "=================================" -ForegroundColor Cyan
 #   Best practice: Keep Schema Admins EMPTY.
 #   Add members temporarily only when schema changes are needed.
 #
-# Impact: Zero ✅ — safe to apply immediately
+# Impact: Zero ✅ - safe to apply immediately
 #
 # Verification:
 #   Get-ADGroupMember -Identity "Schema Admins"

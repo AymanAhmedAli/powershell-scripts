@@ -36,7 +36,7 @@ $alreadyIn = 0
 
 foreach ($account in $adminAccounts) {
     if ($account.SamAccountName -in $protectedNames) {
-        Write-Host "  [OK] $($account.SamAccountName) — already protected" -ForegroundColor Green
+        Write-Host "  [OK] $($account.SamAccountName) - already protected" -ForegroundColor Green
         $alreadyIn++
     } else {
         if ($WhatIf) {
@@ -71,21 +71,21 @@ Write-Host "=================================" -ForegroundColor Cyan
 # ================================
 # 1. Lists current Protected Users members
 # 2. Gets all accounts with AdminCount=1
-# 3. WhatIf=$true → shows what would be added
-# 4. WhatIf=$false → adds accounts and verifies
+# 3. WhatIf=$true > shows what would be added
+# 4. WhatIf=$false > adds accounts and verifies
 #
 # Why this matters:
 #   Protected Users group enforces:
-#   → No NTLM authentication (prevents pass-the-hash)
-#   → No DES or RC4 encryption (only AES)
-#   → No unconstrained delegation
-#   → TGT lifetime limited to 4 hours
+#   > No NTLM authentication (prevents pass-the-hash)
+#   > No DES or RC4 encryption (only AES)
+#   > No unconstrained delegation
+#   > TGT lifetime limited to 4 hours
 #
 # WARNING: Legacy apps using NTLM or RC4 may break.
 #   Test with non-critical accounts first.
 #   Do NOT add service accounts.
 #
-# Impact: ⚠️ Medium — test legacy apps first
+# Impact: ⚠️ Medium - test legacy apps first
 #
 # Verification:
 #   Get-ADGroupMember -Identity "Protected Users"

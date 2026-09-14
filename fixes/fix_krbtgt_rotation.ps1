@@ -42,7 +42,7 @@ if ($currentDC -ne $pdc) {
 
 $replStatus = repadmin /showrepl 2>&1
 if ($replStatus -match "error|fail") {
-    Write-Host "    [!] Replication issues detected — fix before rotating!" -ForegroundColor Red
+    Write-Host "    [!] Replication issues detected - fix before rotating!" -ForegroundColor Red
 } else {
     Write-Host "    [OK] Replication appears healthy" -ForegroundColor Green
 }
@@ -63,7 +63,7 @@ Write-Host "    Days Since Rotation: $daysSince days" -ForegroundColor $(
 Write-Host "`n[STEP 3] Domain Controllers..." -ForegroundColor Yellow
 $dcs = Get-ADDomainController -Filter *
 foreach ($dc in $dcs) {
-    Write-Host "    → $($dc.Name) ($($dc.IPv4Address))" -ForegroundColor Yellow
+    Write-Host "    > $($dc.Name) ($($dc.IPv4Address))" -ForegroundColor Yellow
 }
 Write-Host "    Wait time after rotation: $($dcs.Count * 15) minutes minimum" -ForegroundColor Cyan
 
@@ -89,7 +89,7 @@ if ($WhatIf) {
         Write-Host "    [OK] krbtgt rotated successfully ✅" -ForegroundColor Green
         Write-Host "    [OK] New PasswordLastSet: $($after.PasswordLastSet)" -ForegroundColor Green
     } else {
-        Write-Host "    [!] Rotation may have failed — verify manually" -ForegroundColor Red
+        Write-Host "    [!] Rotation may have failed - verify manually" -ForegroundColor Red
     }
 }
 
@@ -101,10 +101,10 @@ if ($WhatIf) {
     Write-Host "    3. Run again for Rotation 2" -ForegroundColor Cyan
     Write-Host "    4. Monitor Event ID 4769 for Kerberos issues" -ForegroundColor Cyan
 } else {
-    Write-Host "    → Force replication: repadmin /syncall /AdeP" -ForegroundColor Cyan
-    Write-Host "    → Wait 10+ hours" -ForegroundColor Yellow
-    Write-Host "    → Run script again for Rotation 2" -ForegroundColor Yellow
-    Write-Host "    → Monitor Event ID 4769 for Kerberos issues" -ForegroundColor Cyan
+    Write-Host "    > Force replication: repadmin /syncall /AdeP" -ForegroundColor Cyan
+    Write-Host "    > Wait 10+ hours" -ForegroundColor Yellow
+    Write-Host "    > Run script again for Rotation 2" -ForegroundColor Yellow
+    Write-Host "    > Monitor Event ID 4769 for Kerberos issues" -ForegroundColor Cyan
 }
 
 Write-Host "`n=================================" -ForegroundColor Cyan
@@ -115,7 +115,7 @@ Write-Host "=================================" -ForegroundColor Cyan
 # How it works:
 # ================================
 # krbtgt signs ALL Kerberos tickets in the domain.
-# If compromised → attacker can forge Golden Tickets.
+# If compromised > attacker can forge Golden Tickets.
 # Golden Ticket = unlimited domain access for 10 years.
 #
 # Why rotate TWICE:
@@ -129,7 +129,7 @@ Write-Host "=================================" -ForegroundColor Cyan
 #   4771 = Kerberos pre-authentication failed
 #   14   = KDC error (System log)
 #
-# Impact: ⚠️ High — use maintenance window
+# Impact: ⚠️ High - use maintenance window
 #   Run on PDC Emulator for best results.
 #   Verify replication health before rotating.
 #

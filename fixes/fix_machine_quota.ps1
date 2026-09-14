@@ -21,7 +21,7 @@ $quota = (Get-ADObject -Identity (Get-ADDomain).DistinguishedName `
 Write-Host "`n[*] Current Value: $quota" -ForegroundColor Yellow
 
 if ($quota -eq 0) {
-    Write-Host "[OK] Already set to 0 — no action needed" -ForegroundColor Green
+    Write-Host "[OK] Already set to 0 - no action needed" -ForegroundColor Green
 } else {
     if ($WhatIf) {
         Write-Host "[WHATIF] Would set Machine Account Quota to 0" -ForegroundColor Yellow
@@ -49,15 +49,15 @@ Write-Host "=================================" -ForegroundColor Cyan
 # How it works:
 # ================================
 # 1. Reads current ms-DS-MachineAccountQuota from domain root
-# 2. WhatIf=$true → shows what would happen
-# 3. WhatIf=$false → sets quota to 0 and verifies
+# 2. WhatIf=$true > shows what would happen
+# 3. WhatIf=$false > sets quota to 0 and verifies
 #
 # Why this matters:
-#   Default value is 10 — any domain user can join 10 computers.
+#   Default value is 10 - any domain user can join 10 computers.
 #   Attackers use this for NTLM relay and Kerberoasting attacks.
 #   Setting to 0 means only admins can join computers.
 #
-# Impact: Zero ✅ — safe to apply immediately
+# Impact: Zero ✅ - safe to apply immediately
 #
 # Verification:
 #   (Get-ADObject -Identity (Get-ADDomain).DistinguishedName

@@ -60,19 +60,19 @@ Write-Host "=================================" -ForegroundColor Cyan
 # ================================
 # 1. Gets all Domain Controllers from AD
 # 2. Checks Print Spooler status on each DC via WinRM
-# 3. WhatIf=$true → shows what would be changed
-# 4. WhatIf=$false → stops and disables via Invoke-Command
+# 3. WhatIf=$true > shows what would be changed
+# 4. WhatIf=$false > stops and disables via Invoke-Command
 #
 # Why this matters:
 #   Print Spooler on DCs is exploitable via:
-#   → PrinterBug (SpoolSample) — forces DC to authenticate to attacker
-#   → PetitPotam — NTLM relay to compromise the domain
+#   > PrinterBug (SpoolSample) - forces DC to authenticate to attacker
+#   > PetitPotam - NTLM relay to compromise the domain
 #   These attacks can lead to full domain takeover.
 #
 # Note: Stop-Service -ComputerName deprecated in newer PowerShell.
 #   Using Invoke-Command instead for remote execution.
 #
-# Impact: ⚠️ Medium — verify no DC-based printing first
+# Impact: ⚠️ Medium - verify no DC-based printing first
 #   Check with: Get-Printer -ComputerName DC_NAME
 #
 # Verification:

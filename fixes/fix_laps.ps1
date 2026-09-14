@@ -40,11 +40,11 @@ foreach ($attr in $schemaAttributes) {
         $exists = Get-ADObject -Filter {lDAPDisplayName -eq $attr} `
             -SearchBase $schemaNC -ErrorAction Stop
         if ($exists) {
-            Write-Host "    [OK] $attr — present in schema" -ForegroundColor Green
+            Write-Host "    [OK] $attr - present in schema" -ForegroundColor Green
             $lapsConfigured = $true
         }
     } catch {
-        Write-Host "    [!] $attr — NOT in schema" -ForegroundColor Red
+        Write-Host "    [!] $attr - NOT in schema" -ForegroundColor Red
     }
 }
 
@@ -91,9 +91,9 @@ if ($WhatIf) {
 Write-Host "`n[STEP 5] GPO Configuration (manual steps)..." -ForegroundColor Yellow
 Write-Host "    1. Open Group Policy Management" -ForegroundColor White
 Write-Host "    2. Create GPO: 'Deploy-LAPS'" -ForegroundColor White
-Write-Host "    3. Computer Configuration → Administrative Templates → System → LAPS" -ForegroundColor White
-Write-Host "    4. Enable: Configure password backup directory → Active Directory" -ForegroundColor White
-Write-Host "    5. Enable: Password Settings → Length: 14, Age: 30 days" -ForegroundColor White
+Write-Host "    3. Computer Configuration > Administrative Templates > System > LAPS" -ForegroundColor White
+Write-Host "    4. Enable: Configure password backup directory > Active Directory" -ForegroundColor White
+Write-Host "    5. Enable: Password Settings > Length: 14, Age: 30 days" -ForegroundColor White
 Write-Host "    6. Link GPO to Computers OU" -ForegroundColor White
 
 # Step 6: How to read passwords
@@ -123,7 +123,7 @@ Write-Host "=================================" -ForegroundColor Cyan
 #   Windows LAPS: msLAPS-EncryptedPassword (encrypted in AD)
 #   Use Windows LAPS on Server 2019/2022+
 #
-# Impact: ⚠️ Medium — requires LAPS MSI on older systems
+# Impact: ⚠️ Medium - requires LAPS MSI on older systems
 #
 # Verification after deployment:
 #   Get-LapsADPassword -Identity COMPUTERNAME -AsPlainText

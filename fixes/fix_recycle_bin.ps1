@@ -5,7 +5,7 @@
 #              Allows recovery of accidentally deleted AD objects
 # Usage: .\fixes\fix_recycle_bin.ps1
 # Requirements: PowerShell 5.1+, RSAT AD module, Domain Admin
-# WARNING: IRREVERSIBLE — cannot be undone after enabling
+# WARNING: IRREVERSIBLE - cannot be undone after enabling
 # ================================
 
 $WhatIf = $true  # Change to $false to apply fix
@@ -54,17 +54,17 @@ Write-Host "=================================" -ForegroundColor Cyan
 # How it works:
 # ================================
 # 1. Checks if Recycle Bin Feature is enabled
-# 2. WhatIf=$true → shows what would happen with irreversible warning
-# 3. WhatIf=$false → enables at forest level and verifies
+# 2. WhatIf=$true > shows what would happen with irreversible warning
+# 3. WhatIf=$false > enables at forest level and verifies
 #
 # Why this matters:
 #   Without AD Recycle Bin, deleted objects are permanently gone.
 #   With it: deleted objects retained 180 days, full restore possible.
 #   Restore command: Restore-ADObject -Identity <object>
 #
-# WARNING: IRREVERSIBLE — cannot be disabled after enabling.
+# WARNING: IRREVERSIBLE - cannot be disabled after enabling.
 #
-# Impact: Positive only ✅ — safe to apply immediately
+# Impact: Positive only ✅ - safe to apply immediately
 #
 # Verification:
 #   (Get-ADOptionalFeature -Filter {Name -like "Recycle Bin Feature"}).EnabledScopes

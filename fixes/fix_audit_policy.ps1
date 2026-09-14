@@ -32,7 +32,7 @@ $auditSettings = @(
 
 Write-Host "`n[*] Audit categories to configure:" -ForegroundColor Yellow
 foreach ($setting in $auditSettings) {
-    Write-Host "    → $($setting.Subcategory)"
+    Write-Host "    > $($setting.Subcategory)"
 }
 
 if ($WhatIf) {
@@ -57,16 +57,16 @@ Write-Host "=================================" -ForegroundColor Cyan
 # How it works:
 # ================================
 # 1. Defines list of critical audit subcategories
-# 2. WhatIf=$true → shows what would be enabled
-# 3. WhatIf=$false → uses auditpol.exe to enable Success+Failure
+# 2. WhatIf=$true > shows what would be enabled
+# 3. WhatIf=$false > uses auditpol.exe to enable Success+Failure
 #
 # Why this matters:
 #   Without auditing, attacks go undetected:
-#   → Failed logons not logged = brute force invisible
-#   → Group changes not logged = privilege escalation invisible
-#   → Directory changes not logged = AD modifications invisible
+#   > Failed logons not logged = brute force invisible
+#   > Group changes not logged = privilege escalation invisible
+#   > Directory changes not logged = AD modifications invisible
 #
-# Impact: ✅ Low — only increases log volume
+# Impact: ✅ Low - only increases log volume
 #   Monitor disk space on DC after enabling.
 #
 # Verification:
