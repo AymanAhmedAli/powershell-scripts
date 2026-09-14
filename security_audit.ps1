@@ -56,7 +56,7 @@ Check-Finding "S-ADRegistration" "Critical" "Non-admin users can add computers t
 Write-Log "`n[*] P-SchemaAdmin" "Yellow"
 $schemaAdmins = Get-ADGroupMember -Identity "Schema Admins" -ErrorAction SilentlyContinue
 $nonDefault = $schemaAdmins | Where-Object {$_.SamAccountName -ne "Administrator"}
-Check-Finding "P-SchemaAdmin" "Critical" "Schema Admins contains non-default accounts" ($nonDefault.Count -eq 0) "Total: $($schemaAdmins.Count) - Non-default: $($nonDefault.SamAccountName -join ', ')" "Remove all non-essential members"
+Check-Finding "P-SchemaAdmin" "Critical" "Schema Admins contains non-default accounts" ($nonDefault.Count -eq 0) "Total members: $($schemaAdmins.Count) - Non-default: $(if($nonDefault.Count -eq 0){'None'}else{$nonDefault.SamAccountName -join ', '})" "Remove all non-essential members"
 
 Write-Log "`n[*] A-MinPwdLen" "Yellow"
 $policy = Get-ADDefaultDomainPasswordPolicy
@@ -79,17 +79,17 @@ foreach ($dc in $dcs) {
         if ($svc.Status -eq "Running") { $spoolerRunning += $dc.Name }
     } catch {}
 }
-Check-Finding "A-DC-Spooler" "Critical" "Print Spooler running on DCs" ($spoolerRunning.Count -eq 0) "DCs with Spooler: $($spoolerRunning -join ', ')" "Disable Print Spooler via GPO"
+Check-Finding "A-DC-Spooler" "Critical" "Print Spooler running on DCs" ($spoolerRunning.Count -eq 0) "DCs with Spooler running: $(if($spoolerRunning.Count -eq 0){'None - All DCs secured'}else{$spoolerRunning -join ', '})"
 
 Write-Log "`n[*] P-ProtectedUsers" "Yellow"
 $adminAccounts = Get-ADGroupMember -Identity "Domain Admins" -Recursive | Where-Object {$_.objectClass -eq "user"}
 $protectedUsers = Get-ADGroupMember -Identity "Protected Users" -ErrorAction SilentlyContinue
 $protectedNames = $protectedUsers.SamAccountName
 $notProtected = $adminAccounts | Where-Object {$_.SamAccountName -notin $protectedNames}
-Check-Finding "P-ProtectedUsers" "Critical" "Admin accounts not in Protected Users" ($notProtected.Count -eq 0) "Not protected: $($notProtected.Count) - $($notProtected.SamAccountName -join ', ')" "Add admin accounts to Protected Users group"
+Check-Finding "P-ProtectedUsers" "Critical" "Admin accounts not in Protected Users" ($notProtected.Count -eq 0) "Not protected: $($notProtected.Count) - $(if($notProtected.Count -eq 0){'All admins in Protected Users'}else{$notProtected.SamAccountName -join ', '})" "Add admin accounts to Protected Users group"
 
 Write-Log "`n[*] P-Delegated" "Yellow"
-$notDelegated = Get-ADUser -Filter {AdminCount -eq 1} -Properties AccountNotDelegated | Where-Object {$_.AccountNotDelegated -ne $true}
+$notDelegated = Get-ADUser -Filter {AdminCount -eq 1} -Properties AccountNotDelegated | Where-Object {$_.AccountNotDelegated -ne $true -and $_.SamAccountName -ne "krbtgt"}
 Check-Finding "P-Delegated" "Critical" "Admin accounts not flagged cannot-be-delegated" ($notDelegated.Count -eq 0) "Not flagged: $($notDelegated.Count) - $($notDelegated.SamAccountName -join ', ')" "Set AccountNotDelegated to true"
 
 Write-Log "`n[*] A-BackupMetadata" "Yellow"
