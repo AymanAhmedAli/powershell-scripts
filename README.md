@@ -17,6 +17,7 @@ Read-only scripts that check and report — no changes made.
 | `dc_security_check.ps1` | Checks DC security misconfigurations |
 | `local_admin_audit.ps1` | Audits local admins across all domain computers — exports CSV |
 | `security_audit.ps1` | Comprehensive audit based on pentest findings — Critical, High, Medium |
+| `Get-ADComputerLastLogon.ps1` | Reports last logon date and days-inactive for every computer in the domain — exports sorted CSV |
 
 ---
 
